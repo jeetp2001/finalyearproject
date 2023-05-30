@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>learning platform</title>
+    <style>
+        body{
+            background-color: #404040;
+
+        }
+        h1{
+            text-align: center;
+            color: #ff8500;
+        }
+        .img1{
+            height:auto;
+            width: 100%;
+            max-width: 1000px;
+        
+            border-radius: 20px;
+            margin-left: 250px;
+
+            
+        }
+    </style>
+</head>
+<body>
+    {% block content %}
+        
+    
+    <h1 style="font-size:3vw; text-align: center; color: #feda6a;"> BASIC GREETINGS (GLOBAL)</h1>
+    <img class="img1" style="margin-left:250px;border-radius:20px;" src="/static/asl-signs-new.jpg"  alt="error">
+    <h1 style="font-size:2vw; text-align: center; color: #feda6a;">letters A to Z (GLOBAL) </h1>
+
+     
+<img style="margin-left: 380px;border-radius:20px" src="{% static 'signla.jpg' %}" alt="My image">
+
+
+    {% endblock  %}
+    
+</body>
+</html>
