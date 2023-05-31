@@ -25,7 +25,7 @@ SECRET_KEY = '3k7=!d39#4@_&5a6to&4=_=j(c^v0(vv91cj5+9e8+d4&+01jb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*","https://a2sl.azurewebsites.net/"]
+ALLOWED_HOSTS = ["20.26.203.78","master1.uksouth.cloudapp.azure.com","0.0.0.0", "localhost"]
 
 
 # Application definition
@@ -41,7 +41,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,9 +74,17 @@ WSGI_APPLICATION = 'A2SL.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
+    #'default': {
+     #   'ENGINE': 'django.db.backends.sqlite3',
+      #  'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+   # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'signlanguageinterpreter',
+        'USER': 'root',
+        'PASSWORD': 'password',
+        'HOST': '20.26.203.78',
+        'PORT': '3306',
     }
 }
 
@@ -120,11 +127,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# STATIC_ROOT = BASE_DIR /'staticfiles'
-
-STATICFILES_DIRS = [    
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR,"assets"),
-    os.path.join(BASE_DIR,"static"),
 ]

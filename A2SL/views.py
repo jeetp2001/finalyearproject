@@ -10,6 +10,10 @@ from django.contrib.staticfiles import finders
 from django.contrib.auth.decorators import login_required
 
 
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+
 def home_view(request):
     return render(request, 'home.html')
 
@@ -22,7 +26,6 @@ def about_view(request):
 def contact_view(request):
     return render(request, 'contact.html')
 @login_required(login_url="login")
-
 def animation_view(request):
     if request.method == 'POST':
         text = request.POST.get('sen')
@@ -30,7 +33,6 @@ def animation_view(request):
         text.lower()
         # tokenizing the sentence
         words = word_tokenize(text)
-        print("tokenizing the sentence",words)
 
         tagged = nltk.pos_tag(words)
         tense = {}
@@ -39,23 +41,21 @@ def animation_view(request):
         tense["past"] = len([word for word in tagged if word[1] in ["VBD", "VBN"]])
         tense["present_continuous"] = len([word for word in tagged if word[1] in ["VBG"]])
 
-        print("POS Tagging",tagged)
-
         # stopwords that will be removed
         stop_words = set(
             ["mightn't", 're', 'wasn', 'wouldn', 'be', 'has', 'that', 'does', 'shouldn', 'do', "you've", 'off', 'for',
-            "didn't", 'm', 'ain', 'haven', "weren't", 'are', "she's", "wasn't", 'its', "haven't", "wouldn't", 'don',
-            'weren', 's', "you'd", "don't", 'doesn', "hadn't", 'is', 'was', "that'll", "should've", 'a', 'then', 'the',
-            'mustn', 'i', 'nor', 'as', "it's", "needn't", 'd', 'am', 'have', 'hasn', 'o', "aren't", "you'll",
-            "couldn't", "you're", "mustn't", 'didn', "doesn't", 'll', 'an', 'hadn', 'whom', 'y', "hasn't", 'itself',
-            'couldn', 'needn', "shan't", 'isn', 'been', 'such', 'shan', "shouldn't", 'aren', 'being', 'were', 'did',
-            'ma', 't', 'having', 'mightn', 've', "isn't", "won't"])
+             "didn't", 'm', 'ain', 'haven', "weren't", 'are', "she's", "wasn't", 'its', "haven't", "wouldn't", 'don',
+             'weren', 's', "you'd", "don't", 'doesn', "hadn't", 'is', 'was', "that'll", "should've", 'a', 'then', 'the',
+             'mustn', 'nor', 'as', "it's", "needn't", 'd', 'am', 'have', 'hasn', 'o', "aren't", "you'll",
+             "couldn't", "you're", "mustn't", 'didn', "doesn't", 'll', 'an', 'hadn', 'whom', 'y', "hasn't", 'itself',
+             'couldn', 'needn', "shan't", 'isn', 'been', 'such', 'shan', "shouldn't", 'aren', 'being', 'were', 'did',
+             'ma', 't', 'having', 'mightn', 've', "isn't", "won't"])
 
         # removing stopwords and applying lemmatizing nlp process to words
         lr = WordNetLemmatizer()
         filtered_text = []
         for w, p in zip(words, tagged):
-            if w not in stop_words:
+            if w.lower() not in stop_words:
                 if p[1] == 'VBG' or p[1] == 'VBD' or p[1] == 'VBZ' or p[1] == 'VBN' or p[1] == 'NN':
                     filtered_text.append(lr.lemmatize(w, pos='v'))
                 elif p[1] == 'JJ' or p[1] == 'JJR' or p[1] == 'JJS' or p[1] == 'RBR' or p[1] == 'RBS':
@@ -64,25 +64,16 @@ def animation_view(request):
                 else:
                     filtered_text.append(lr.lemmatize(w))
 
-        
-
         # adding the specific word to specify tense
-        
-        words12 = filtered_text
-        print("filtered_text",words12)
-
+        words = filtered_text
         temp = []
         for w in words:
             if w == 'I':
-                temp.append('Me')
+                temp.append('ME')
             else:
                 temp.append(w)
         words = temp
         probable_tense = max(tense, key=tense.get)
-
-        print(" temp",words)
-        print("probable_tense",probable_tense)
-
 
         if probable_tense == "past" and tense["past"] >= 1:
             temp = ["Before"]
@@ -103,23 +94,18 @@ def animation_view(request):
 
         filtered_text = []
         for w in words:
-            path = w + ".mp4"
+            path = w.capitalize() + ".mp4"
             f = finders.find(path)
             # splitting the word if its animation is not present in database
             if not f:
                 for c in w:
-                    filtered_text.append(c)
+                    filtered_text.append(c.upper())
             # otherwise animation of word
             else:
-                filtered_text.append(w)
+                filtered_text.append(w.capitalize())
+        words = filtered_text;
 
-        wordsFinal = filtered_text
-        print("wordsFinal",wordsFinal)
-        print("text",text)
-
-
-
-        return render(request, 'animation.html', {'words': wordsFinal, 'text': text})
+        return render(request, 'animation.html', {'words': words, 'text': text})
     else:
         return render(request, 'animation.html')
 
